@@ -1,167 +1,133 @@
-/* Genel Ayarlar */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// 1. Ürün Veritabanı (Zara ve Mavi Benzeri)
+const products = [
+    {
+        id: 1,
+        brand: "ZARA",
+        name: "Oversize Blazer Ceket",
+        price: 1899,
+        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    },
+    {
+        id: 2,
+        brand: "MAVI",
+        name: "Slim Fit Jean",
+        price: 950,
+        image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    },
+    {
+        id: 3,
+        brand: "ZARA",
+        name: "Basic Beyaz Gömlek",
+        price: 690,
+        image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    },
+    {
+        id: 4,
+        brand: "MAVI",
+        name: "Denim Ceket",
+        price: 1250,
+        image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    },
+    {
+        id: 5,
+        brand: "ZARA",
+        name: "Keten Pantolon",
+        price: 1100,
+        image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    },
+    {
+        id: 6,
+        brand: "MAVI",
+        name: "Logo Baskılı T-Shirt",
+        price: 350,
+        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+    }
+];
+
+// Sepet Dizisi
+let cart = [];
+
+const productListElement = document.getElementById('product-list');
+const cartItemsElement = document.getElementById('cart-items');
+const cartSidebar = document.getElementById('cart-sidebar');
+const totalElement = document.getElementById('total-price');
+const cartCountElement = document.getElementById('cart-count');
+
+// Sayfa Yüklenince Ürünleri Listele
+function initApp() {
+    products.forEach(product => {
+        const productBox = document.createElement('div');
+        productBox.classList.add('product-box');
+        productBox.innerHTML = `
+            <img src="${product.image}" alt="" class="product-img">
+            <h2 class="product-brand">${product.brand}</h2>
+            <h3 class="product-title">${product.name}</h3>
+            <span class="product-price">${product.price} TL</span>
+            <i class="fa-solid fa-cart-plus add-cart" onclick="addToCart(${product.id})"></i>
+        `;
+        productListElement.appendChild(productBox);
+    });
 }
 
-body {
-    background-color: #f4f4f4;
-    color: #333;
+// Sepeti Aç/Kapa
+function toggleCart() {
+    cartSidebar.classList.toggle('active');
 }
 
-/* Header Tasarımı */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 20px 5%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+// Sepete Ekle
+function addToCart(id) {
+    // Ürünü bul
+    const product = products.find(p => p.id === id);
+    
+    // Sepette var mı kontrol et
+    const existingItem = cart.find(item => item.id === id);
+
+    if (existingItem) {
+        alert("Bu ürün zaten sepetinizde!");
+    } else {
+        cart.push(product);
+        updateCart();
+        // Sepeti otomatik aç (kullanıcı görsün diye)
+        if(!cartSidebar.classList.contains('active')){
+            toggleCart();
+        }
+    }
 }
 
-.logo h1 {
-    color: #ff5722;
-    font-size: 24px;
+// Sepetten Çıkar
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCart();
 }
 
-nav ul {
-    display: flex;
-    list-style: none;
+// Sepeti Güncelle (HTML Render + Toplam Fiyat)
+function updateCart() {
+    // 1. HTML'i temizle
+    cartItemsElement.innerHTML = "";
+    
+    let totalPrice = 0;
+
+    // 2. Yeni listeyi yaz
+    cart.forEach(item => {
+        totalPrice += item.price;
+
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart-box-item');
+        cartItem.innerHTML = `
+            <img src="${item.image}" alt="" class="cart-img">
+            <div class="detail-box">
+                <div class="cart-product-title">${item.brand} ${item.name}</div>
+                <div class="cart-price">${item.price} TL</div>
+            </div>
+            <i class="fa-solid fa-trash cart-remove" onclick="removeFromCart(${item.id})"></i>
+        `;
+        cartItemsElement.appendChild(cartItem);
+    });
+
+    // 3. Toplam Fiyatı ve İkon Sayısını Güncelle
+    totalElement.innerText = totalPrice + " TL";
+    cartCountElement.innerText = cart.length;
 }
 
-nav ul li a {
-    text-decoration: none;
-    color: #333;
-    margin: 0 15px;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav ul li a:hover {
-    color: #ff5722;
-}
-
-.cart-icon {
-    position: relative;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-#cart-count {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background: #ff5722;
-    color: #fff;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-}
-
-/* Hero Banner */
-.hero {
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-    height: 400px;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #fff;
-}
-
-.hero h2 {
-    font-size: 40px;
-    margin-bottom: 10px;
-}
-
-.hero button {
-    padding: 10px 20px;
-    background-color: #ff5722;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    border-radius: 5px;
-}
-
-/* Ürünler Alanı */
-.container {
-    padding: 40px 5%;
-}
-
-.container h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-}
-
-.product-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-.product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.product-card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.product-card .price {
-    color: #ff5722;
-    font-weight: bold;
-    font-size: 18px;
-    display: block;
-    margin-bottom: 15px;
-}
-
-.add-btn {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.3s;
-}
-
-.add-btn:hover {
-    background-color: #ff5722;
-}
-
-/* Footer */
-footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-}
+// Uygulamayı Başlat
+initApp();
