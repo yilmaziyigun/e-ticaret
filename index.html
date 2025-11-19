@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Shop | E-Ticaret</title>
+    <title>Yepsoş Konsept | Tarzını Yansıt</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <h1><i class="fa-solid fa-bag-shopping"></i> ModernShop</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#">Ana Sayfa</a></li>
-                <li><a href="#">Ürünler</a></li>
-                <li><a href="#">Hakkımızda</a></li>
-            </ul>
-        </nav>
-        <div class="cart-icon">
-            <i class="fa-solid fa-cart-shopping"></i>
+        <div class="logo">Yepsoş<span>STORE</span></div>
+        <div class="cart-box" onclick="toggleCart()">
+            <i class="fa-solid fa-bag-shopping"></i>
             <span id="cart-count">0</span>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-text">
-            <h2>Tarzını Yansıt</h2>
-            <p>En yeni koleksiyonlar şimdi indirimde.</p>
-            <button>Alışverişe Başla</button>
-        </div>
+    <section class="shop container">
+        <h2 class="section-title">Yeni Sezon Ürünleri</h2>
+        <div class="shop-content" id="product-list">
+            </div>
     </section>
 
-    <div class="container">
-        <h2>Popüler Ürünler</h2>
-        <div id="product-list" class="product-grid">
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Sepetim</h2>
+            <i class="fa-solid fa-xmark" id="close-cart" onclick="toggleCart()"></i>
+        </div>
+        
+        <div class="cart-content" id="cart-items">
             </div>
-    </div>
 
-    <footer>
-        <p>&copy; 2024 ModernShop. Tüm hakları saklıdır. GitHub Projesi.</p>
-    </footer>
+        <div class="cart-footer">
+            <div class="total">
+                <div class="total-title">Toplam Tutar:</div>
+                <div class="total-price" id="total-price">0 TL</div>
+            </div>
+            <button class="btn-buy">Siparişi Tamamla</button>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
